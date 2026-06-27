@@ -398,6 +398,11 @@ $('#play-challenge').onclick=()=>startChallenge();
 $('#play-city-easy').onclick=()=>startCity('easy');
 $('#play-city-hard').onclick=()=>startCity('hard');
 $('#again').onclick=()=>{ if(STATE.lastMode==='city')startCity(STATE.lastDiff||'easy'); else STATE.lastMode==='challenge'?startChallenge():startPractice(); };
+document.addEventListener('keydown', e => {
+  if((e.key==='Enter'||e.key==='Return') && $('#screen-results')?.classList.contains('active')){
+    e.preventDefault(); $('#again').click();
+  }
+});
 $('#city-quit').onclick=()=>{ CityDefense.stop(); show('home'); };
 
 /* ----------------------------- Game engine ----------------------------- */
