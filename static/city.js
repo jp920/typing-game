@@ -760,22 +760,26 @@ window.CityDefense = (() => {
       const neon    = NEON[ti % NEON.length];
       const isEasy  = state.difficulty === 'easy';
 
+      // fallingIdx is the word index currently in the air (-1 if none)
+      const hasFalling = state.falling.some(f => f.trackIdx === ti);
+      const fallingIdx = hasFalling ? pos - 1 : -1;
+
       word.split('').forEach((ch, ci) => {
         // easy: show letter at its drop column; hard: packed word at track centre
         const cx = isEasy ? easyX(ci, word.length, W) : startX + ci * CHAR_W + CHAR_W / 2;
         const cy = WORD_Y;
 
-        if (ci < pos) {
-          // already spawned
-          ctx.globalAlpha = 0.28;
-          ctx.fillStyle   = neon;
-          ctx.shadowBlur  = 0;
-        } else if (ci === pos) {
-          // current — bright + glow
+        if (ci === fallingIdx) {
+          // this letter is currently falling — light it up to match
           ctx.globalAlpha = 1;
           ctx.fillStyle   = '#ffffff';
           ctx.shadowColor = neon;
           ctx.shadowBlur  = 14;
+        } else if (ci < (hasFalling ? fallingIdx : pos)) {
+          // already caught/missed
+          ctx.globalAlpha = 0.28;
+          ctx.fillStyle   = neon;
+          ctx.shadowBlur  = 0;
         } else {
           // upcoming
           ctx.globalAlpha = 0.72;
