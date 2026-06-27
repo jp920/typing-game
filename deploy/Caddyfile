@@ -1,0 +1,49 @@
+# Task Service reverse proxy.
+# - Binds ONLY to the LAN IP (never 0.0.0.0).
+# - http:// scheme disables automatic HTTPS (this is a LAN/VPN service).
+# - Bearer token (from /opt/tasks/.env, injected into Caddy's env via a systemd override)
+#   is required for /mcp and for write methods on /api. Dashboard + GET /api are open on LAN.
+
+{
+	admin off
+	auto_https off
+}
+
+# {$LAN_IP} is substituted at load time from Caddy's environment (set via the
+# systemd override's EnvironmentFile=/etc/caddy/tasks.env). Keeps the real IP out of git.
+http://tasks.local, http://zima, http://zima.lan, http://zima.local, http://{$LAN_IP} {
+	bind {$LAN_IP}
+
+	# MCP endpoint — always requires the bearer token.
+	handle /mcp* {
+		route {
+			@noauth not header Authorization "Bearer {env.TASKS_TOKEN}"
+			respond @noauth "Unauthorized: bearer token required" 401
+			reverse_proxy 127.0.0.1:8765
+		}
+	}
+
+	# Typing Quest game — independent app on :8001. Strips the /typing prefix
+	# so the game (which serves at root) is reachable at http://<LAN_IP>/typing/.
+	redir /typing /typing/
+	handle_path /typing/* {
+		reverse_proxy 127.0.0.1:8001
+	}
+
+	# REST API — write methods require the token; GETs are open on the LAN.
+	handle /api/* {
+		route {
+			@needauth {
+				method POST PUT PATCH DELETE
+				not header Authorization "Bearer {env.TASKS_TOKEN}"
+			}
+			respond @needauth "Unauthorized: bearer token required" 401
+			reverse_proxy 127.0.0.1:8080
+		}
+	}
+
+	# Everything else (dashboard at /, /healthz) -> the API app.
+	handle {
+		reverse_proxy 127.0.0.1:8080
+	}
+}

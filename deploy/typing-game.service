@@ -1,0 +1,16 @@
+[Unit]
+Description=Typing Quest — kids typing game (uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=jp
+Group=jp
+WorkingDirectory=/home/jp/typing-game
+Environment=TYPING_DB=/home/jp/typing-game/game.db
+ExecStart=/home/jp/typing-game/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8001
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

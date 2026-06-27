@@ -1,0 +1,119 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Typing Quest</title>
+<base href="/typing/" />
+<link rel="stylesheet" href="styles.css?v=4" />
+
+<div id="app">
+  <!-- ============== PROFILE SELECT ============== -->
+  <section id="screen-profiles" class="screen active">
+    <h1 class="logo">⌨️ Typing <span>Quest</span></h1>
+    <p class="tagline">Pick your hero to begin</p>
+    <div id="profile-cards" class="profile-cards"></div>
+    <div class="more-heroes-row">
+      <button id="more-heroes-btn" class="more-heroes-btn">More Heroes ▼</button>
+    </div>
+    <div id="more-hero-cards" class="profile-cards" style="display:none;margin-bottom:16px"></div>
+
+    <div class="leaderboard-wrap">
+      <h2>🏆 Leaderboard</h2>
+      <div id="leaderboard"></div>
+    </div>
+
+    <div class="calendar-wrap">
+      <h2 id="cal-title">🗓️ This Month</h2>
+      <div id="cal-legend" class="cal-legend"></div>
+      <div class="cal-grid-head">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div id="calendar" class="calendar"></div>
+    </div>
+  </section>
+
+  <!-- ============== PROFILE HOME ============== -->
+  <section id="screen-home" class="screen">
+    <button class="back-btn" data-to="profiles">← Switch hero</button>
+    <div id="home-hero" class="home-hero"></div>
+
+    <div class="panel">
+      <h3>📖 Book theme</h3>
+      <p class="hint">Words &amp; phrases from your book show up in the game.</p>
+      <div id="book-status" class="book-status">No book set.</div>
+      <div class="book-controls">
+        <input id="book-title" type="text" placeholder="Type a book title (e.g. Harry Potter, Alice in Wonderland)" />
+        <button id="book-set" class="btn-primary">Set book</button>
+        <button id="book-clear" class="btn-ghost">Clear</button>
+      </div>
+      <details class="paste-details">
+        <summary>…or paste an excerpt</summary>
+        <textarea id="book-text" rows="4" placeholder="Paste a chapter or a few paragraphs here, then press Set book."></textarea>
+      </details>
+      <div id="book-msg" class="book-msg"></div>
+    </div>
+
+    <div class="panel">
+      <h3>⚖️ Focus</h3>
+      <div class="slider-row">
+        <span>🎯 Accuracy</span>
+        <input id="weight" type="range" min="0" max="100" value="50" />
+        <span>⚡ Speed</span>
+      </div>
+      <div id="weight-label" class="weight-label">Balanced — 50% speed / 50% accuracy</div>
+    </div>
+
+    <div class="play-buttons">
+      <button id="play-practice" class="btn-play practice">
+        🪜 Practice<small>Learn finger technique · Level <b id="home-level">1</b></small>
+      </button>
+      <button id="play-challenge" class="btn-play challenge">
+        🔥 Challenge<small>60-second sprint · for the leaderboard</small>
+      </button>
+      <button id="play-city-easy" class="btn-play city-easy">
+        🏙️ City — Easy<small>Letters fall left-to-right · great start</small>
+      </button>
+      <button id="play-city-hard" class="btn-play city-hard">
+        💀 City — Hard<small>Letters fall from their word position</small>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============== GAME ============== -->
+  <section id="screen-game" class="screen">
+    <div class="game-top">
+      <button class="back-btn" data-to="home">✕ Quit</button>
+      <div class="game-stats">
+        <div class="stat"><b id="g-wpm">0</b><span>WPM</span></div>
+        <div class="stat"><b id="g-acc">100</b><span>% acc</span></div>
+        <div class="stat"><b id="g-pts">0</b><span>points</span></div>
+        <div class="stat" id="timer-stat" hidden><b id="g-time">60</b><span>sec</span></div>
+        <div class="stat"><b id="g-combo">1.0×</b><span>combo</span></div>
+      </div>
+    </div>
+    <div id="banner" class="banner"></div>
+    <div id="type-area" class="type-area"></div>
+    <div id="keyboard" class="keyboard"></div>
+    <div class="hands-hint" id="hands-hint">Keys are colored by which finger to use.</div>
+  </section>
+
+  <!-- ============== CITY DEFENSE ============== -->
+  <section id="screen-city" class="screen">
+    <button class="back-btn city-quit-btn" id="city-quit">✕ Quit</button>
+    <canvas id="city-canvas"></canvas>
+  </section>
+
+  <!-- ============== RESULTS ============== -->
+  <section id="screen-results" class="screen">
+    <div id="result-card" class="result-card"></div>
+    <div class="result-buttons">
+      <button id="again" class="btn-primary">↻ Play again</button>
+      <button class="btn-ghost" data-to="home">⌂ Home</button>
+    </div>
+  </section>
+</div>
+
+<div id="fx"></div>
+<button id="mute" class="mute-btn" title="Mute / unmute">🔊</button>
+
+<script src="city.js?v=2"></script>
+<script src="app.js?v=5"></script>
